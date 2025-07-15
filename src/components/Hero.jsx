@@ -1,5 +1,6 @@
 // src/components/Hero.jsx
 import React, { useEffect, useRef } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import '../styles/Hero.css';
 
 const Hero = () => {
@@ -82,9 +83,12 @@ const Hero = () => {
             Unlock the power of decentralized finance with intelligent automation.
           </p>
           <div className="hero-cta">
-            <a href="/claim-airdrop" className="primary-btn">
-              Claim Airdrop
-            </a>
+          <Link 
+            to="/claim-airdrop" 
+            className="primary-btn"
+          >
+            Claim Airdrop
+          </Link>
           </div>
         </div>
 
