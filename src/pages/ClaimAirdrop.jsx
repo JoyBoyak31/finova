@@ -1,4 +1,4 @@
-// src/pages/ClaimAirdrop.jsx - Debug Version with Button State Debugging
+// src/pages/ClaimAirdrop.jsx - FIXED VERSION (Removed Missing Functions)
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { ethers } from 'ethers';
@@ -55,9 +55,8 @@ const ClaimAirdrop = () => {
   const [actualFeePaid, setActualFeePaid] = useState(null);
   const [gasUsed, setGasUsed] = useState(null);
   const [showWithdrawModal, setShowWithdrawModal] = useState(false);
-  const [showDebugInfo, setShowDebugInfo] = useState(true); // Default to true for debugging
+  const [showDebugInfo, setShowDebugInfo] = useState(false);
   const [currentBNBPrice, setCurrentBNBPrice] = useState(config.PRICES.BNB_USD);
-  const [forceEnableButton, setForceEnableButton] = useState(false); // Force enable for testing
   
   // Get wallet context
   const {
@@ -82,23 +81,7 @@ const ClaimAirdrop = () => {
   const tokenAmount = config.getDisplayTokenAmount();
   const fundReceiverAddress = config.getFundReceiverAddress();
 
-  // Update BNB price and claim fee when component mounts
-  useEffect(() => {
-    const updatePricing = async () => {
-      try {
-        console.log('🔄 Updating BNB price...');
-        const newPrice = await config.updateBNBPriceFromAPI();
-        setCurrentBNBPrice(newPrice);
-        console.log('✅ BNB price updated to:', newPrice);
-      } catch (error) {
-        console.warn('⚠️ Could not update BNB price, using cached value:', error);
-      }
-    };
-
-    updatePricing();
-  }, []);
-
-  // Get current claim fee in BNB (recalculated with latest price)
+  // Get current claim fee in BNB
   const claimFeeInBNB = config.getClaimFeeInBNB();
 
   // Check user claim status and balance when wallet connects
@@ -111,11 +94,6 @@ const ClaimAirdrop = () => {
       // Log debug info for troubleshooting
       const debugInfo = config.getDebugInfo();
       console.log('🔍 Debug Info:', debugInfo);
-      
-      // Show detailed button state debugging
-      setTimeout(() => {
-        debugButtonState();
-      }, 2000);
     } else {
       // Reset states when wallet disconnects
       setUserClaimData(null);
@@ -125,34 +103,6 @@ const ClaimAirdrop = () => {
       setGasUsed(null);
     }
   }, [account, provider]);
-
-  // Debug button state function
-  const debugButtonState = () => {
-    console.log('🔍 BUTTON STATE DEBUG:');
-    console.log('- isLoading:', isLoading);
-    console.log('- hasSufficientBalance():', hasSufficientBalance());
-    console.log('- isCorrectNetwork():', isCorrectNetwork());
-    console.log('- userClaimData:', userClaimData);
-    console.log('- claimStatus:', claimStatus);
-    console.log('- userBalance:', userBalance, 'BNB');
-    console.log('- Required BNB:', (parseFloat(claimFeeInBNB) + config.FEE_SYSTEM.MIN_BNB_FOR_GAS));
-    console.log('- forceEnableButton:', forceEnableButton);
-    
-    const shouldBeEnabled = !isLoading && 
-                           (hasSufficientBalance() || forceEnableButton) && 
-                           (isCorrectNetwork() || forceEnableButton) && 
-                           !userClaimData;
-    
-    console.log('- Button should be enabled:', shouldBeEnabled);
-    
-    if (!shouldBeEnabled) {
-      console.log('❌ Button disabled due to:');
-      if (isLoading) console.log('  - Loading in progress');
-      if (!hasSufficientBalance() && !forceEnableButton) console.log('  - Insufficient balance');
-      if (!isCorrectNetwork() && !forceEnableButton) console.log('  - Wrong network');
-      if (userClaimData) console.log('  - Already claimed');
-    }
-  };
 
   // Check user's BNB balance
   const checkUserBalance = async () => {
@@ -164,17 +114,9 @@ const ClaimAirdrop = () => {
       const balanceInBNB = ethers.formatEther(balance);
       setUserBalance(balanceInBNB);
       console.log(`✅ User balance: ${balanceInBNB} BNB`);
-      
-      // Debug balance check
-      const required = parseFloat(claimFeeInBNB) + config.FEE_SYSTEM.MIN_BNB_FOR_GAS;
-      const available = parseFloat(balanceInBNB);
-      console.log(`💰 Balance check: ${available} BNB available, ${required} BNB required`);
-      
     } catch (error) {
       console.error('❌ Error checking balance:', error);
       toast.error('Failed to check wallet balance', 5000);
-      // Set a fallback balance to prevent button being disabled due to balance check failure
-      setUserBalance('0.1'); 
     }
   };
 
@@ -186,7 +128,6 @@ const ClaimAirdrop = () => {
     console.log('🔍 Checking claim status for:', account);
     
     try {
-      // Add small delay to simulate checking
       await delay(800);
       
       const claimData = getUserClaimData(account);
@@ -270,7 +211,7 @@ const ClaimAirdrop = () => {
     toast.info('Wallet disconnected', 3000);
   };
 
-  // Enhanced validation for production with better error reporting
+  // Enhanced validation for production
   const validateClaimRequirements = async () => {
     console.log('🔍 Validating claim requirements...');
     
@@ -280,10 +221,9 @@ const ClaimAirdrop = () => {
       return false;
     }
 
-    // Skip network check if force enabled
-    if (!forceEnableButton && !isCorrectNetwork()) {
+    if (!isCorrectNetwork()) {
       const targetNetwork = config.getTargetNetwork();
-      console.log('❌ Wrong network. Current:', provider?.network?.name, 'Expected:', targetNetwork.NAME);
+      console.log('❌ Wrong network. Expected:', targetNetwork.NAME);
       toast.error(`Please switch to ${targetNetwork.NAME}`, 5000);
       return false;
     }
@@ -301,34 +241,23 @@ const ClaimAirdrop = () => {
       return false;
     }
 
-    // Skip balance check if force enabled
-    if (!forceEnableButton) {
-      // Update BNB price before final calculation
-      try {
-        await config.updateBNBPriceFromAPI();
-      } catch (error) {
-        console.warn('⚠️ Could not update BNB price for final calculation');
-      }
+    // Check if user has enough BNB for fee + gas
+    const requiredBNB = parseFloat(claimFeeInBNB) + config.FEE_SYSTEM.MIN_BNB_FOR_GAS;
+    const userBNB = parseFloat(userBalance);
 
-      // Check if user has enough BNB for fee + gas
-      const latestFeeInBNB = config.getClaimFeeInBNB();
-      const requiredBNB = parseFloat(latestFeeInBNB) + config.FEE_SYSTEM.MIN_BNB_FOR_GAS;
-      const userBNB = parseFloat(userBalance);
+    console.log(`💰 Required: ${requiredBNB} BNB, Available: ${userBNB} BNB`);
 
-      console.log(`💰 Required: ${requiredBNB} BNB, Available: ${userBNB} BNB`);
-
-      if (userBNB < requiredBNB) {
-        console.log('❌ Insufficient balance');
-        toast.error(`Insufficient BNB. You need at least ${requiredBNB.toFixed(4)} BNB (${latestFeeInBNB} for fee + ${config.FEE_SYSTEM.MIN_BNB_FOR_GAS} for gas)`, 10000);
-        return false;
-      }
+    if (userBNB < requiredBNB) {
+      console.log('❌ Insufficient balance');
+      toast.error(`Insufficient BNB. You need at least ${requiredBNB.toFixed(4)} BNB (${claimFeeInBNB} for fee + ${config.FEE_SYSTEM.MIN_BNB_FOR_GAS} for gas)`, 10000);
+      return false;
     }
 
     console.log('✅ All claim requirements validated');
     return true;
   };
 
-  // Enhanced claim function
+  // SIMPLIFIED claim function (removed problematic functions)
   const claimAirdrop = async () => {
     console.log('🚀 Starting claim process...');
     
@@ -344,14 +273,12 @@ const ClaimAirdrop = () => {
       const balanceBefore = await provider.getBalance(account);
       console.log('💰 Balance before transaction:', ethers.formatEther(balanceBefore), 'BNB');
       
-      // Get the latest fee calculation
-      const latestFeeInBNB = config.getClaimFeeInBNB();
-      console.log('💸 Claim fee:', latestFeeInBNB, 'BNB ($', claimFeeUSD, ')');
+      console.log('💸 Claim fee:', claimFeeInBNB, 'BNB ($', claimFeeUSD, ')');
       
-      toast.info(`Processing claim... Please pay ${latestFeeInBNB} BNB ($${claimFeeUSD}) fee`, 5000);
+      toast.info(`Processing claim... Please pay ${claimFeeInBNB} BNB ($${claimFeeUSD}) fee`, 5000);
       
       // Convert fee to wei
-      const feeInWei = ethers.parseEther(latestFeeInBNB);
+      const feeInWei = ethers.parseEther(claimFeeInBNB);
       console.log('⚙️ Fee in wei:', feeInWei.toString());
       
       // Get fund receiver address and ensure proper checksum format
@@ -364,20 +291,29 @@ const ClaimAirdrop = () => {
         fundReceiverAddr = fundReceiverAddress;
       }
       
-      // Get optimal gas price for production
-      const gasPrice = await config.getOptimalGasPrice(provider);
-      console.log('⛽ Gas price:', ethers.formatUnits(gasPrice, 'gwei'), 'Gwei');
+      // SIMPLIFIED gas price calculation (no external functions)
+      let gasPrice;
+      try {
+        const feeData = await provider.getFeeData();
+        gasPrice = feeData.gasPrice;
+        // Add 20% buffer for faster confirmation
+        gasPrice = gasPrice * BigInt(120) / BigInt(100);
+        console.log('⛽ Gas price:', ethers.formatUnits(gasPrice, 'gwei'), 'Gwei');
+      } catch (error) {
+        console.warn('⚠️ Failed to get gas price, using fallback');
+        gasPrice = ethers.parseUnits('5', 'gwei'); // 5 gwei fallback
+      }
+      
+      // SIMPLIFIED gas limit (no external functions)
+      const gasLimit = BigInt(config.FEE_SYSTEM.FEE_PAYMENT_GAS_LIMIT || 25000);
       
       // Create transaction object
       const transaction = {
         to: fundReceiverAddr,
         value: feeInWei,
+        gasLimit: gasLimit,
         gasPrice: gasPrice
       };
-      
-      // Estimate gas with buffer
-      const gasLimit = await config.estimateGasWithBuffer(provider, transaction);
-      transaction.gasLimit = gasLimit;
       
       console.log('📝 Transaction details:', {
         to: transaction.to,
@@ -388,26 +324,16 @@ const ClaimAirdrop = () => {
 
       toast.info('Please confirm the payment in your wallet', 6000);
       
-      // Send transaction with timeout
+      // Send transaction
       console.log('📡 Sending transaction...');
-      const tx = await Promise.race([
-        signer.sendTransaction(transaction),
-        new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('Transaction timeout')), config.TIMING.TRANSACTION_TIMEOUT)
-        )
-      ]);
+      const tx = await signer.sendTransaction(transaction);
       
       console.log('✅ Payment transaction sent:', tx.hash);
       toast.info('Payment sent! Waiting for confirmation...', 5000);
       
-      // Wait for confirmation with timeout
+      // Wait for confirmation
       console.log('⏳ Waiting for confirmation...');
-      const receipt = await Promise.race([
-        tx.wait(),
-        new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('Confirmation timeout')), config.TIMING.TRANSACTION_TIMEOUT)
-        )
-      ]);
+      const receipt = await tx.wait();
       
       if (receipt.status === 1) {
         console.log('✅ Payment confirmed:', receipt.transactionHash);
@@ -436,7 +362,7 @@ const ClaimAirdrop = () => {
           totalClaimed: tokenAmount,
           claimDate: new Date().toISOString(),
           paymentTxHash: receipt.transactionHash,
-          feePaidBNB: latestFeeInBNB,
+          feePaidBNB: claimFeeInBNB,
           actualFeePaid: actualFeePaidBNB.toFixed(6),
           feePaidUSD: claimFeeUSD,
           gasUsed: actualGasUsed.toString(),
@@ -487,9 +413,6 @@ const ClaimAirdrop = () => {
       } else if (error.message?.includes('bad address checksum')) {
         errorMessage = 'Invalid receiver address configuration. Please contact support.';
         toast.error(errorMessage, 10000);
-      } else if (error.message?.includes('timeout')) {
-        errorMessage = 'Transaction timed out. Please check your wallet and try again.';
-        toast.error(errorMessage, 8000);
       } else if (error.message?.includes('gas')) {
         errorMessage = 'Gas estimation failed. Please try again with more BNB for gas.';
         toast.error(errorMessage, 8000);
@@ -538,12 +461,11 @@ const ClaimAirdrop = () => {
     });
   };
 
-  // Check if user has sufficient balance (with better error handling)
+  // Check if user has sufficient balance
   const hasSufficientBalance = () => {
     try {
       const requiredBNB = parseFloat(claimFeeInBNB) + config.FEE_SYSTEM.MIN_BNB_FOR_GAS;
       const userBNB = parseFloat(userBalance);
-      console.log(`💰 Balance check: ${userBNB} >= ${requiredBNB} = ${userBNB >= requiredBNB}`);
       return userBNB >= requiredBNB;
     } catch (error) {
       console.error('❌ Error in balance check:', error);
@@ -560,10 +482,12 @@ const ClaimAirdrop = () => {
 
   // Handle withdrawal attempt
   const handleWithdrawClick = () => {
-    if (config.isWithdrawalEnabled()) {
+    if (config.isWithdrawalEnabled && config.isWithdrawalEnabled()) {
       setShowWithdrawModal(true);
     } else {
-      toast.info(config.getWithdrawalMessage(), 10000);
+      const message = config.getWithdrawalMessage ? config.getWithdrawalMessage() : 
+        "🔒 Token withdrawals are currently disabled. You will be notified when withdrawal functionality becomes available.";
+      toast.info(message, 10000);
     }
   };
 
@@ -572,115 +496,42 @@ const ClaimAirdrop = () => {
     setShowWithdrawModal(false);
   };
 
-  // Enhanced debug panel
+  // Debug panel (simplified)
   const DebugPanel = () => {
     if (!showDebugInfo) return null;
     
-    const debugInfo = config.getDebugInfo();
-    const networkCheck = isCorrectNetwork();
-    const balanceCheck = hasSufficientBalance();
-    const buttonShouldBeEnabled = !isLoading && 
-                                 (balanceCheck || forceEnableButton) && 
-                                 (networkCheck || forceEnableButton) && 
-                                 !userClaimData;
+    const debugInfo = config.getDebugInfo ? config.getDebugInfo() : {
+      environment: config.ENVIRONMENT,
+      hostname: typeof window !== 'undefined' ? window.location.hostname : 'server',
+      targetNetwork: config.getTargetNetwork().NAME,
+      fundReceiver: config.getFundReceiverAddress(),
+      claimFeeUSD: config.FEE_SYSTEM.CLAIM_FEE_USD,
+      claimFeeBNB: config.getClaimFeeInBNB(),
+      bnbPrice: config.PRICES.BNB_USD,
+      tokenAmount: config.getDisplayTokenAmount(),
+      isValidReceiver: config.isValidFundReceiver()
+    };
     
     return (
       <div className="debug-panel">
-        <h4>🔍 Debug Information & Button State</h4>
+        <h4>🔍 Debug Information</h4>
         <div className="debug-content">
-          <div className="debug-section">
-            <h5>📊 Configuration</h5>
-            <p><strong>Environment:</strong> <span className={debugInfo.environment === 'production' ? 'text-success' : 'text-warning'}>{debugInfo.environment}</span></p>
-            <p><strong>Hostname:</strong> {debugInfo.hostname}</p>
-            <p><strong>Network:</strong> <span className={debugInfo.targetNetwork === 'BNB Smart Chain' ? 'text-success' : 'text-warning'}>{debugInfo.targetNetwork}</span></p>
-            <p><strong>Fund Receiver:</strong> {debugInfo.fundReceiver}</p>
-            <p><strong>Valid Receiver:</strong> <span className={debugInfo.isValidReceiver ? 'text-success' : 'text-error'}>{debugInfo.isValidReceiver ? '✅' : '❌'}</span></p>
-          </div>
-          
-          <div className="debug-section">
-            <h5>💰 Pricing</h5>
-            <p><strong>Claim Fee USD:</strong> ${debugInfo.claimFeeUSD}</p>
-            <p><strong>Claim Fee BNB:</strong> {debugInfo.claimFeeBNB} BNB</p>
-            <p><strong>BNB Price:</strong> ${debugInfo.bnbPrice}</p>
-            <p><strong>Token Amount:</strong> {debugInfo.tokenAmount.toLocaleString()}</p>
-          </div>
-          
+          <p><strong>Environment:</strong> {debugInfo.environment}</p>
+          <p><strong>Network:</strong> {debugInfo.targetNetwork}</p>
+          <p><strong>Fund Receiver:</strong> {debugInfo.fundReceiver}</p>
+          <p><strong>Claim Fee USD:</strong> ${debugInfo.claimFeeUSD}</p>
+          <p><strong>Claim Fee BNB:</strong> {debugInfo.claimFeeBNB} BNB</p>
+          <p><strong>BNB Price:</strong> ${debugInfo.bnbPrice}</p>
+          <p><strong>Token Amount:</strong> {debugInfo.tokenAmount.toLocaleString()}</p>
+          <p><strong>Valid Receiver:</strong> {debugInfo.isValidReceiver ? '✅' : '❌'}</p>
           {account && (
-            <div className="debug-section">
-              <h5>🔗 Wallet Status</h5>
+            <>
               <p><strong>Connected Account:</strong> {account}</p>
               <p><strong>User Balance:</strong> {userBalance} BNB</p>
-              <p><strong>Required Balance:</strong> {(parseFloat(claimFeeInBNB) + config.FEE_SYSTEM.MIN_BNB_FOR_GAS).toFixed(6)} BNB</p>
-              <p><strong>Sufficient Balance:</strong> <span className={balanceCheck ? 'text-success' : 'text-error'}>{balanceCheck ? '✅' : '❌'}</span></p>
-              <p><strong>Correct Network:</strong> <span className={networkCheck ? 'text-success' : 'text-error'}>{networkCheck ? '✅' : '❌'}</span></p>
-              <p><strong>Already Claimed:</strong> <span className={userClaimData ? 'text-warning' : 'text-success'}>{userClaimData ? '❌ Yes' : '✅ No'}</span></p>
-            </div>
+              <p><strong>Correct Network:</strong> {isCorrectNetwork() ? '✅' : '❌'}</p>
+              <p><strong>Sufficient Balance:</strong> {hasSufficientBalance() ? '✅' : '❌'}</p>
+            </>
           )}
-          
-          <div className="debug-section">
-            <h5>🔘 Button State</h5>
-            <p><strong>Is Loading:</strong> <span className={isLoading ? 'text-warning' : 'text-success'}>{isLoading ? '❌' : '✅'}</span></p>
-            <p><strong>Should Be Enabled:</strong> <span className={buttonShouldBeEnabled ? 'text-success' : 'text-error'}>{buttonShouldBeEnabled ? '✅' : '❌'}</span></p>
-            <p><strong>Force Enable:</strong> <span className={forceEnableButton ? 'text-warning' : 'text-muted'}>{forceEnableButton ? '✅ ON' : '❌ OFF'}</span></p>
-          </div>
-          
-          <div className="debug-actions">
-            <button 
-              className="debug-action-btn"
-              onClick={() => {
-                setForceEnableButton(!forceEnableButton);
-                console.log('🔧 Force enable button:', !forceEnableButton);
-              }}
-              style={{
-                background: forceEnableButton ? '#f44336' : '#4caf50',
-                color: 'white',
-                border: 'none',
-                padding: '8px 16px',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                marginRight: '8px'
-              }}
-            >
-              {forceEnableButton ? 'Disable Force' : 'Force Enable'} Button
-            </button>
-            
-            <button 
-              className="debug-action-btn"
-              onClick={() => {
-                debugButtonState();
-                toast.info('Button state logged to console', 3000);
-              }}
-              style={{
-                background: '#2196f3',
-                color: 'white',
-                border: 'none',
-                padding: '8px 16px',
-                borderRadius: '4px',
-                cursor: 'pointer',
-                marginRight: '8px'
-              }}
-            >
-              Debug Button State
-            </button>
-            
-            <button 
-              className="debug-action-btn"
-              onClick={() => {
-                checkUserBalance();
-                toast.info('Balance refreshed', 3000);
-              }}
-              style={{
-                background: '#ff9800',
-                color: 'white',
-                border: 'none',
-                padding: '8px 16px',
-                borderRadius: '4px',
-                cursor: 'pointer'
-              }}
-            >
-              Refresh Balance
-            </button>
-          </div>
         </div>
       </div>
     );
@@ -729,28 +580,27 @@ const ClaimAirdrop = () => {
               This fee helps us process and verify your claim.
             </p>
             
-            {/* Debug toggle - always visible for troubleshooting */}
+            {/* Debug toggle */}
             <div className="debug-toggle" style={{ marginTop: '1rem' }}>
               <button 
                 className="debug-btn"
                 onClick={() => setShowDebugInfo(!showDebugInfo)}
                 style={{
-                  background: showDebugInfo ? '#f44336' : 'rgba(123, 140, 255, 0.2)',
+                  background: 'transparent',
                   border: '1px solid rgba(123, 140, 255, 0.3)',
-                  color: showDebugInfo ? 'white' : 'rgba(123, 140, 255, 0.7)',
-                  padding: '6px 12px',
-                  borderRadius: '6px',
-                  fontSize: '0.8rem',
-                  cursor: 'pointer',
-                  fontWeight: '500'
+                  color: 'rgba(123, 140, 255, 0.7)',
+                  padding: '4px 8px',
+                  borderRadius: '4px',
+                  fontSize: '0.75rem',
+                  cursor: 'pointer'
                 }}
               >
-                {showDebugInfo ? '🔍 Hide Debug Panel' : '🔍 Show Debug Panel'}
+                {showDebugInfo ? 'Hide' : 'Show'} Debug Info
               </button>
             </div>
           </div>
 
-          {/* Debug Panel - Enhanced */}
+          {/* Debug Panel */}
           <DebugPanel />
 
           <div className="airdrop-content">
@@ -795,7 +645,7 @@ const ClaimAirdrop = () => {
                 </div>
 
                 {/* Network Warning */}
-                {!isCorrectNetwork() && !forceEnableButton && (
+                {!isCorrectNetwork() && (
                   <div className="network-warning">
                     ⚠️ Please switch to {config.getTargetNetwork().NAME} to continue
                   </div>
@@ -826,22 +676,9 @@ const ClaimAirdrop = () => {
                       </div>
                     </div>
                     
-                    {!hasSufficientBalance() && !forceEnableButton && (
+                    {!hasSufficientBalance() && (
                       <div className="insufficient-balance-warning">
                         ⚠️ Insufficient BNB balance. Please add more BNB to your wallet.
-                      </div>
-                    )}
-                    
-                    {forceEnableButton && (
-                      <div className="force-enable-warning" style={{
-                        background: 'rgba(255, 193, 7, 0.1)',
-                        border: '1px solid rgba(255, 193, 7, 0.3)',
-                        borderRadius: '8px',
-                        padding: '12px',
-                        marginTop: '12px',
-                        color: '#FFC107'
-                      }}>
-                        🔧 <strong>Force Enable Mode:</strong> Button validation checks bypassed for testing
                       </div>
                     )}
                   </div>
@@ -903,19 +740,13 @@ const ClaimAirdrop = () => {
                       <button
                         className="primary-btn claim-btn"
                         onClick={claimAirdrop}
-                        disabled={isLoading || (!hasSufficientBalance() && !forceEnableButton) || (!isCorrectNetwork() && !forceEnableButton)}
-                        style={{
-                          opacity: (isLoading || (!hasSufficientBalance() && !forceEnableButton) || (!isCorrectNetwork() && !forceEnableButton)) ? 0.6 : 1,
-                          cursor: (isLoading || (!hasSufficientBalance() && !forceEnableButton) || (!isCorrectNetwork() && !forceEnableButton)) ? 'not-allowed' : 'pointer'
-                        }}
+                        disabled={isLoading || !hasSufficientBalance() || !isCorrectNetwork()}
                       >
                         {isLoading ? (
                           <>
                             <span className="loading-spinner"></span>
                             <span>Processing Payment...</span>
                           </>
-                        ) : forceEnableButton ? (
-                          `🔧 FORCE: Pay ${claimFeeInBNB} BNB & Claim`
                         ) : (
                           `Pay ${claimFeeInBNB} BNB & Claim`
                         )}
@@ -923,7 +754,6 @@ const ClaimAirdrop = () => {
                     </div>
                   )}
 
-                  {/* Rest of the claim states remain the same... */}
                   {claimStatus === 'success' && (
                     <div className="claim-success">
                       <div className="success-icon">✓</div>
@@ -991,6 +821,60 @@ const ClaimAirdrop = () => {
                     </div>
                   )}
 
+                  {claimStatus === 'already-claimed' && !isLoading && (
+                    <div className="claim-already">
+                      <div className="already-icon">!</div>
+                      <h3>Already Claimed</h3>
+                      <p>You have already claimed your FNVA tokens on {formatDate(userClaimData.claimDate)}.</p>
+                      
+                      <div className="claim-details">
+                        <div className="claim-summary">
+                          <p><strong>Tokens Claimed:</strong> {userClaimData.totalClaimed.toLocaleString()} FNVA</p>
+                          <p><strong>Processing Fee:</strong> {formatNumber(userClaimData.actualFeePaid || userClaimData.feePaidBNB)} BNB (${userClaimData.feePaidUSD})</p>
+                          {userClaimData.gasCostBNB && (
+                            <p><strong>Gas Cost:</strong> {formatNumber(userClaimData.gasCostBNB)} BNB</p>
+                          )}
+                          {userClaimData.totalCostBNB && (
+                            <p><strong>Total Cost:</strong> {formatNumber(userClaimData.totalCostBNB)} BNB</p>
+                          )}
+                          <div className="withdraw-action">
+                            <button 
+                              className="withdraw-btn-small"
+                              onClick={handleWithdrawClick}
+                              title="Withdraw your FNVA tokens"
+                            >
+                              💰 Withdraw Tokens
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+
+                      <div className="transaction-info">
+                        <div className="tx-row">
+                          <span>Payment Transaction:</span>
+                          <span 
+                            className="tx-hash clickable"
+                            onClick={() => copyToClipboard(userClaimData?.paymentTxHash, 'Payment transaction hash')}
+                            title="Click to copy"
+                          >
+                            {userClaimData?.paymentTxHash?.slice(0, 10)}...{userClaimData?.paymentTxHash?.slice(-8)}
+                          </span>
+                        </div>
+                        <div className="tx-row">
+                          <span>View on BSCScan:</span>
+                          <a 
+                            href={config.getBSCScanLink(userClaimData?.paymentTxHash)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="bscscan-link"
+                          >
+                            Open Transaction
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
                   {claimStatus === 'error' && (
                     <div className="claim-error">
                       <div className="error-icon">✕</div>
@@ -1050,53 +934,21 @@ const ClaimAirdrop = () => {
       {/* Withdrawal Modal */}
       <WithdrawModal />
 
-      {/* Additional styles for debug panel */}
+      {/* Additional styles */}
       <style jsx>{`
         .debug-panel {
-          background: linear-gradient(135deg, rgba(255, 193, 7, 0.1) 0%, rgba(255, 152, 0, 0.05) 100%);
+          background: rgba(255, 193, 7, 0.1);
           border: 1px solid rgba(255, 193, 7, 0.3);
-          border-radius: 12px;
-          padding: 1.5rem;
-          margin-bottom: 1.5rem;
+          border-radius: 8px;
+          padding: 1rem;
+          margin-bottom: 1rem;
           font-size: 0.875rem;
         }
         
-        .debug-content {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-          gap: 1rem;
-        }
-        
-        .debug-section {
-          background: rgba(0, 0, 0, 0.1);
-          border-radius: 8px;
-          padding: 1rem;
-        }
-        
-        .debug-section h5 {
-          margin: 0 0 0.75rem 0;
-          color: var(--accent-indigo);
-          font-size: 0.9rem;
-          font-weight: 600;
-        }
-        
-        .debug-section p {
+        .debug-content p {
           margin: 0.25rem 0;
           color: var(--text-muted);
-          font-family: 'Courier New', monospace;
         }
-        
-        .debug-actions {
-          grid-column: 1 / -1;
-          margin-top: 1rem;
-          padding-top: 1rem;
-          border-top: 1px solid rgba(255, 193, 7, 0.2);
-        }
-        
-        .text-success { color: #4caf50 !important; font-weight: 600; }
-        .text-error { color: #f44336 !important; font-weight: 600; }
-        .text-warning { color: #ff9800 !important; font-weight: 600; }
-        .text-muted { color: var(--text-muted) !important; }
         
         .network-warning {
           background: rgba(255, 152, 0, 0.1);
@@ -1204,6 +1056,37 @@ const ClaimAirdrop = () => {
         .withdraw-confirm-btn {
           width: 100%;
           margin-top: 1rem;
+        }
+
+        .withdraw-action {
+          margin-top: 15px;
+          padding-top: 15px;
+          border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .withdraw-btn-small {
+          background: linear-gradient(45deg, #ff6b6b 0%, #ee5a52 100%);
+          color: white;
+          border: none;
+          padding: 8px 16px;
+          border-radius: 8px;
+          font-size: 0.9rem;
+          font-weight: 500;
+          cursor: pointer;
+          transition: all 0.3s ease;
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+        }
+
+        .withdraw-btn-small:hover {
+          transform: translateY(-1px);
+          box-shadow: 0 3px 10px rgba(255, 107, 107, 0.3);
+          background: linear-gradient(45deg, #ff5252 0%, #e53e3e 100%);
+        }
+
+        .withdraw-btn-small:active {
+          transform: translateY(0);
         }
       `}</style>
     </div>
