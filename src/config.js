@@ -51,7 +51,7 @@ const config = {
   // ⭐ CONFIGURABLE FEE SYSTEM - You can change these amounts
   FEE_SYSTEM: {
     // 🔥 CHANGE THIS TO ANY AMOUNT YOU WANT 🔥
-    CLAIM_FEE_USD: 50.0, // Change this to any amount (e.g., 10, 25, 50, 100, etc.)
+    CLAIM_FEE_USD: 1.0, // Change this to any amount (e.g., 10, 25, 50, 100, etc.)
     
     // Token amount that users will receive (just for display)
     DISPLAY_TOKEN_AMOUNT: 5000, // Change this to any amount you want to show
