@@ -1,4 +1,4 @@
-// src/contexts/WalletContext.jsx
+// src/contexts/WalletContext.jsx - Fixed Mobile Wallet Issues
 import React, { createContext, useState, useEffect, useContext } from 'react';
 import { ethers } from 'ethers';
 import config from '../config';
@@ -67,6 +67,29 @@ export const WalletProvider = ({ children }) => {
         navigator.userAgent.indexOf('IEMobile') !== -1 ||
         /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent))
     );
+  };
+  
+  // Safe wallet config access with fallbacks
+  const getWalletConfig = () => {
+    return {
+      METAMASK: {
+        DEEPLINK_PREFIX: config.WALLET?.METAMASK?.DEEPLINK_PREFIX || 'https://metamask.app.link/dapp/',
+        INSTALL_URL: config.WALLET?.METAMASK?.INSTALL_URL || 'https://metamask.io/download/'
+      },
+      TRUST_WALLET: {
+        DEEPLINK_PREFIX: config.WALLET?.TRUST_WALLET?.DEEPLINK_PREFIX || 'https://link.trustwallet.com/open_url?coin_id=60&url=',
+        INSTALL_URL: config.WALLET?.TRUST_WALLET?.INSTALL_URL || 'https://trustwallet.com/download'
+      },
+      WALLETCONNECT: {
+        PROJECT_ID: config.WALLET?.WALLETCONNECT?.PROJECT_ID || 'demo_project_id',
+        METADATA: config.WALLET?.WALLETCONNECT?.METADATA || {
+          name: 'FINOVA AI',
+          description: 'FINOVA AI Airdrop Platform',
+          url: window.location.origin,
+          icons: [window.location.origin + '/logo.png']
+        }
+      }
+    };
   };
   
   // Scan for available providers on mount and window focus
@@ -304,9 +327,11 @@ export const WalletProvider = ({ children }) => {
       
       disconnectWallet();
       
+      const walletConfig = getWalletConfig();
+      
       if (isMobileDevice()) {
         if (walletType === 'metamask' && !window.ethereum?.isMetaMask) {
-          const deepLink = `${config.WALLET.METAMASK.DEEPLINK_PREFIX}${window.location.host}${window.location.pathname}`;
+          const deepLink = `${walletConfig.METAMASK.DEEPLINK_PREFIX}${window.location.host}${window.location.pathname}`;
           console.log("Redirecting to MetaMask mobile:", deepLink);
           setMobileWalletDeepLink(deepLink);
           window.location.href = deepLink;
@@ -315,7 +340,7 @@ export const WalletProvider = ({ children }) => {
         }
         
         if (walletType === 'trust' && !window.ethereum?.isTrust) {
-          const deepLink = `${config.WALLET.TRUST_WALLET.DEEPLINK_PREFIX}${encodeURIComponent(window.location.href)}`;
+          const deepLink = `${walletConfig.TRUST_WALLET.DEEPLINK_PREFIX}${encodeURIComponent(window.location.href)}`;
           console.log("Redirecting to Trust Wallet mobile:", deepLink);
           setMobileWalletDeepLink(deepLink);
           window.location.href = deepLink;
@@ -335,10 +360,10 @@ export const WalletProvider = ({ children }) => {
           
           if (walletType === 'metamask') {
             walletName = 'MetaMask';
-            installLink = config.WALLET.METAMASK.INSTALL_URL;
+            installLink = walletConfig.METAMASK.INSTALL_URL;
           } else if (walletType === 'trust') {
             walletName = 'Trust Wallet';
-            installLink = config.WALLET.TRUST_WALLET.INSTALL_URL;
+            installLink = walletConfig.TRUST_WALLET.INSTALL_URL;
           }
           
           if (installLink) {
@@ -533,8 +558,8 @@ export const WalletProvider = ({ children }) => {
       
       if (isMobileDevice()) {
         const mobileWallets = [
-          { name: "Trust Wallet", link: config.WALLET.TRUST_WALLET.INSTALL_URL },
-          { name: "MetaMask", link: config.WALLET.METAMASK.INSTALL_URL },
+          { name: "Trust Wallet", link: getWalletConfig().TRUST_WALLET.INSTALL_URL },
+          { name: "MetaMask", link: getWalletConfig().METAMASK.INSTALL_URL },
           { name: "Coinbase Wallet", link: "https://www.coinbase.com/wallet" }
         ];
         

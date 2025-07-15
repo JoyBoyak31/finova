@@ -1,4 +1,4 @@
-// src/config.js - Production Ready Configuration
+// src/config.js - Fixed Mobile Wallet Configuration
 
 const config = {
   // Network configurations
@@ -44,6 +44,27 @@ const config = {
           'https://data-seed-prebsc-2-s3.binance.org:8545/'
         ],
         EXPLORER_URL: 'https://testnet.bscscan.com'
+      }
+    }
+  },
+
+  // 🔧 WALLET CONFIGURATION - Added missing wallet config
+  WALLET: {
+    METAMASK: {
+      DEEPLINK_PREFIX: 'https://metamask.app.link/dapp/',
+      INSTALL_URL: 'https://metamask.io/download/'
+    },
+    TRUST_WALLET: {
+      DEEPLINK_PREFIX: 'https://link.trustwallet.com/open_url?coin_id=60&url=',
+      INSTALL_URL: 'https://trustwallet.com/download'
+    },
+    WALLETCONNECT: {
+      PROJECT_ID: 'your_walletconnect_project_id', // You can get this from walletconnect.com
+      METADATA: {
+        name: 'FINOVA AI',
+        description: 'FINOVA AI Airdrop Platform',
+        url: 'https://your-domain.com',
+        icons: ['https://your-domain.com/logo.png']
       }
     }
   },
@@ -128,30 +149,6 @@ const config = {
     return available >= required;
   },
 
-  // Rest of your config...
-  NETWORK: {
-    BSC: {
-      MAINNET: {
-        ID: 56,
-        NAME: 'BNB Smart Chain',
-        CURRENCY: { name: 'BNB', symbol: 'BNB', decimals: 18 },
-        RPC_URLS: [
-          'https://bsc-dataseed1.binance.org/',
-          'https://bsc-dataseed2.binance.org/',
-          'https://rpc.ankr.com/bsc'
-        ],
-        EXPLORER_URL: 'https://bscscan.com'
-      },
-      TESTNET: {
-        ID: 97,
-        NAME: 'BNB Smart Chain Testnet',
-        CURRENCY: { name: 'tBNB', symbol: 'tBNB', decimals: 18 },
-        RPC_URLS: ['https://data-seed-prebsc-1-s1.binance.org:8545/'],
-        EXPLORER_URL: 'https://testnet.bscscan.com'
-      }
-    }
-  },
-
   // Helper functions
   getClaimFeeInBNB() {
     const feeInBNB = (this.FEE_SYSTEM.CLAIM_FEE_USD / this.PRICES.BNB_USD);
@@ -185,6 +182,15 @@ const config = {
     return `${network.EXPLORER_URL}/tx/${txHash}`;
   },
 
+  // 🔧 WITHDRAWAL HELPER FUNCTIONS
+  isWithdrawalEnabled() {
+    return this.FEE_SYSTEM.WITHDRAWAL_ENABLED;
+  },
+
+  getWithdrawalMessage() {
+    return this.FEE_SYSTEM.WITHDRAWAL_MESSAGE;
+  },
+
   getDebugInfo() {
     return {
       environment: this.ENVIRONMENT,
@@ -196,7 +202,12 @@ const config = {
       bnbPrice: this.PRICES.BNB_USD,
       tokenAmount: this.getDisplayTokenAmount(),
       isValidReceiver: this.isValidFundReceiver(),
-      minBNBRequired: this.getMinimumRequiredBNB()
+      minBNBRequired: this.getMinimumRequiredBNB(),
+      walletConfig: {
+        metamask: !!this.WALLET.METAMASK,
+        trustWallet: !!this.WALLET.TRUST_WALLET,
+        walletConnect: !!this.WALLET.WALLETCONNECT
+      }
     };
   }
 };

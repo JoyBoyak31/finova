@@ -1,0 +1,8 @@
+# Render _redirects file - place this in public/_redirects
+
+# Handle SPA routing - redirect all non-file requests to index.html
+/*    /index.html   200
+
+# Specific routes (optional but recommended for clarity)
+/claim-airdrop    /index.html   200
+/claim-airdrop/*  /index.html   200
