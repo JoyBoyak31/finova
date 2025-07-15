@@ -1,0 +1,239 @@
+/* src/styles/Tokenomics.css */
+.tokenomics-section {
+  padding: 100px 0;
+  position: relative;
+  background-color: var(--bg-dark);
+  overflow: hidden;
+  z-index: 1;
+}
+
+.tokenomics-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+  position: relative;
+  z-index: 2;
+}
+
+.tokenomics-content {
+  display: flex;
+  flex-direction: column;
+  gap: 50px;
+  margin-top: 60px;
+}
+
+@media (min-width: 992px) {
+  .tokenomics-content {
+    flex-direction: row;
+    align-items: center;
+  }
+}
+
+.section-subtitle {
+  font-size: 1.2rem;
+  color: var(--text-secondary);
+  margin-top: 1rem;
+  max-width: 700px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+/* Chart Styles */
+.tokenomics-chart {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.pie-chart {
+  position: relative;
+  width: 300px;
+  height: 300px;
+  border-radius: 50%;
+  box-shadow: 0 0 50px rgba(114, 9, 183, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  transition: box-shadow 0.3s ease;
+}
+
+.chart-center {
+  position: absolute;
+  width: 150px;
+  height: 150px;
+  background-color: var(--bg-dark, #121218);
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  z-index: 1;
+}
+
+.chart-center .logo-text {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text-primary, #ffffff);
+  letter-spacing: 1px;
+}
+
+.chart-center .logo-highlight {
+  font-size: 1.3rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--accent-color, #8b5cf6), var(--secondary-color, #3b82f6));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-top: -8px;
+}
+
+/* Breakdown Styles */
+.tokenomics-breakdown {
+  flex: 1;
+  background: rgba(30, 30, 40, 0.4);
+  border-radius: 16px;
+  padding: 30px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.breakdown-title {
+  font-size: 1.8rem;
+  margin-bottom: 25px;
+  color: var(--text-primary, #ffffff);
+  text-align: center;
+}
+
+.distribution-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.distribution-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
+}
+
+.distribution-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  flex: 1;
+}
+
+.distribution-color {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+}
+
+.distribution-details {
+  flex: 1;
+}
+
+.distribution-category {
+  display: block;
+  font-size: 1rem;
+  margin-bottom: 6px;
+  color: var(--text-primary, #ffffff);
+}
+
+.distribution-bar {
+  height: 8px;
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.distribution-progress {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 1.5s ease-out;
+}
+
+.distribution-percentage {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-primary, #ffffff);
+  margin-left: 15px;
+}
+
+/* Background Elements */
+.tokenomics-bg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  opacity: 0.6;
+}
+
+.geometric-shape {
+  position: absolute;
+  border-radius: 50%;
+}
+
+.shape-1 {
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, rgba(139, 92, 246, 0) 70%);
+  top: -100px;
+  left: -100px;
+}
+
+.shape-2 {
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, rgba(59, 130, 246, 0) 70%);
+  bottom: -50px;
+  right: -50px;
+}
+
+.shape-3 {
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, rgba(239, 68, 68, 0.15) 0%, rgba(239, 68, 68, 0) 70%);
+  top: 30%;
+  right: 10%;
+}
+
+/* Animation for chart elements */
+@media (prefers-reduced-motion: no-preference) {
+  .pie-chart {
+    animation: pulse 3s infinite alternate;
+  }
+  
+  @keyframes pulse {
+    0% {
+      box-shadow: 0 0 30px rgba(114, 9, 183, 0.2);
+    }
+    100% {
+      box-shadow: 0 0 50px rgba(114, 9, 183, 0.4);
+    }
+  }
+  
+  .distribution-progress {
+    animation: growIn 1.5s ease-out forwards;
+  }
+  
+  @keyframes growIn {
+    from {
+      width: 0;
+    }
+    to {
+      width: var(--percentage);
+    }
+  }
+}
