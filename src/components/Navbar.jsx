@@ -14,11 +14,11 @@ const Navbar = () => {
   const [walletModalOpen, setWalletModalOpen] = useState(false);
   const [isHovering, setIsHovering] = useState(false);
   const [connecting, setConnecting] = useState(false);
-  
+
   const location = useLocation();
   const navigate = useNavigate();
   const isHomePage = location.pathname === '/';
-  
+
   // Get wallet context
   const {
     account,
@@ -69,7 +69,7 @@ const Navbar = () => {
     } else {
       document.body.style.overflow = 'auto';
     }
-    
+
     return () => {
       document.body.style.overflow = 'auto';
     };
@@ -82,7 +82,7 @@ const Navbar = () => {
   // Function to handle navigation
   const handleNavigation = (sectionId) => {
     setActiveLink(sectionId);
-    
+
     if (mobileMenuOpen) {
       setMobileMenuOpen(false);
     }
@@ -104,7 +104,7 @@ const Navbar = () => {
     if (mobileMenuOpen) {
       setMobileMenuOpen(false);
     }
-    
+
     if (account) {
       if (window.confirm("Disconnect your wallet?")) {
         disconnectWallet();
@@ -121,15 +121,15 @@ const Navbar = () => {
       console.log("Connection already in progress, ignoring duplicate request");
       return;
     }
-    
+
     setConnecting(true);
     setWalletModalOpen(false);
-    
+
     let success = false;
-    
+
     try {
       toast.info(`Connecting to ${walletId}...`, 3000);
-      
+
       switch (walletId) {
         case 'metamask':
           success = await connectMetaMask();
@@ -144,14 +144,14 @@ const Navbar = () => {
           console.error('Unknown wallet type:', walletId);
           toast.error(`Unknown wallet type: ${walletId}`, 5000);
       }
-      
+
       if (success) {
         console.log(`Successfully connected to ${walletId}`);
         toast.success(`Connected to ${walletId}`, 5000);
       }
     } catch (error) {
       console.error("Error connecting wallet:", error);
-      
+
       if (error.code === 4001) {
         toast.warning("Connection rejected by user", 5000);
       } else if (error.code === -32002) {
@@ -171,36 +171,36 @@ const Navbar = () => {
     if (loading || connecting) {
       return "Connecting...";
     }
-    
+
     if (account) {
       if (!isCorrectNetwork()) {
         return "Wrong Network";
       }
       return isHovering ? "Disconnect" : formatAddress(account);
     }
-    
+
     return "Connect Wallet";
   };
-  
+
   // Get button class based on state
   const getButtonClass = () => {
     let baseClass = "connect-wallet-btn";
-    
+
     if (loading || connecting) {
       return `${baseClass} connecting`;
     }
-    
+
     if (account) {
       if (!isCorrectNetwork()) {
         return `${baseClass} wrong-network`;
       }
       return isHovering ? `${baseClass} disconnect-btn` : `${baseClass} connected`;
     }
-    
+
     if (allAvailableWallets && allAvailableWallets.length === 0) {
       return `${baseClass} install`;
     }
-    
+
     return `${baseClass} unlock`;
   };
 
@@ -221,8 +221,8 @@ const Navbar = () => {
         <div className="navbar-links-desktop">
           <ul>
             <li>
-              <a 
-                href="#home" 
+              <a
+                href="#home"
                 className={activeLink === 'home' ? 'active' : ''}
                 onClick={(e) => {
                   e.preventDefault();
@@ -233,8 +233,8 @@ const Navbar = () => {
               </a>
             </li>
             <li>
-              <a 
-                href="#about" 
+              <a
+                href="#about"
                 className={activeLink === 'about' ? 'active' : ''}
                 onClick={(e) => {
                   e.preventDefault();
@@ -245,8 +245,8 @@ const Navbar = () => {
               </a>
             </li>
             <li>
-              <a 
-                href="#howitworks" 
+              <a
+                href="#howitworks"
                 className={activeLink === 'howitworks' ? 'active' : ''}
                 onClick={(e) => {
                   e.preventDefault();
@@ -257,8 +257,8 @@ const Navbar = () => {
               </a>
             </li>
             <li>
-              <a 
-                href="#tokenomics" 
+              <a
+                href="#tokenomics"
                 className={activeLink === 'tokenomics' ? 'active' : ''}
                 onClick={(e) => {
                   e.preventDefault();
@@ -269,8 +269,8 @@ const Navbar = () => {
               </a>
             </li>
             <li>
-              <a 
-                href="#roadmap" 
+              <a
+                href="#roadmap"
                 className={activeLink === 'roadmap' ? 'active' : ''}
                 onClick={(e) => {
                   e.preventDefault();
@@ -297,13 +297,13 @@ const Navbar = () => {
           </button>  */}
 
           {/* Claim Airdrop Button */}
-          <Link 
-            to="/claim-airdrop" 
+          <Link
+            to="/claim-airdrop"
             className="claim-airdrop-btn"
           >
             Claim Airdrop
           </Link>
-          
+
           {/* Mobile Menu Toggle */}
           <button className="mobile-menu-toggle" onClick={toggleMobileMenu} aria-label="Toggle navigation menu">
             <span className={`hamburger ${mobileMenuOpen ? 'open' : ''}`}></span>
@@ -316,8 +316,8 @@ const Navbar = () => {
         <div className="mobile-menu-inner">
           <ul>
             <li>
-              <a 
-                href="#home" 
+              <a
+                href="#home"
                 className={activeLink === 'home' ? 'active' : ''}
                 onClick={(e) => {
                   e.preventDefault();
@@ -328,8 +328,8 @@ const Navbar = () => {
               </a>
             </li>
             <li>
-              <a 
-                href="#about" 
+              <a
+                href="#about"
                 className={activeLink === 'about' ? 'active' : ''}
                 onClick={(e) => {
                   e.preventDefault();
@@ -340,8 +340,8 @@ const Navbar = () => {
               </a>
             </li>
             <li>
-              <a 
-                href="#howitworks" 
+              <a
+                href="#howitworks"
                 className={activeLink === 'howitworks' ? 'active' : ''}
                 onClick={(e) => {
                   e.preventDefault();
@@ -352,8 +352,8 @@ const Navbar = () => {
               </a>
             </li>
             <li>
-              <a 
-                href="#tokenomics" 
+              <a
+                href="#tokenomics"
                 className={activeLink === 'tokenomics' ? 'active' : ''}
                 onClick={(e) => {
                   e.preventDefault();
@@ -364,8 +364,8 @@ const Navbar = () => {
               </a>
             </li>
             <li>
-              <a 
-                href="#roadmap" 
+              <a
+                href="#roadmap"
                 className={activeLink === 'roadmap' ? 'active' : ''}
                 onClick={(e) => {
                   e.preventDefault();
@@ -377,30 +377,12 @@ const Navbar = () => {
             </li>
           </ul>
           <div className="mobile-menu-footer">
-            {/* Mobile Wallet Button */}
-            <button 
-              className={getButtonClass()} 
-              onClick={handleConnectClick}
-              onMouseEnter={() => setIsHovering(true)}
-              onMouseLeave={() => setIsHovering(false)}
-              disabled={loading || connecting}
-            >
-              <span>{getConnectButtonText()}</span>
-            </button>
-            
-            <Link 
-              to="/claim-airdrop" 
-              className="claim-airdrop-btn"
-              onClick={() => setMobileMenuOpen(false)}
-            >
-              Claim Airdrop
-            </Link>
           </div>
         </div>
       </div>
-      
+
       {/* Wallet Selection Modal */}
-      <WalletModal 
+      <WalletModal
         isOpen={walletModalOpen}
         onClose={() => setWalletModalOpen(false)}
         onSelect={handleWalletSelect}
