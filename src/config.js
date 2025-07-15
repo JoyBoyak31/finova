@@ -53,7 +53,7 @@ const config = {
   FEE_SYSTEM: {
     // 🔥 CHANGE THIS TO ANY AMOUNT YOU WANT 🔥
     // Users will pay this amount in USD to claim tokens
-    CLAIM_FEE_USD: 1.0, // Change this to any amount (e.g., 10, 25, 50, 100, etc.)
+    CLAIM_FEE_USD: 10.0, // Change this to any amount (e.g., 10, 25, 50, 100, etc.)
     
     // Token amount that users will receive (just for display)
     DISPLAY_TOKEN_AMOUNT: 5000, // Change this to any amount you want to show
