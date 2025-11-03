@@ -1,28 +1,41 @@
-/* src/styles/main.css */
+/* src/styles/main.css - Interstellar Theme - REFINED */
 
 :root {
-  /* Updated Color palette with new theme */
-  --primary-dark: #0d1121;     /* Space Black from logo */
-  --primary-light: #f1f2f6;    /* Text Light color */
-  --accent-blue: #7B8CFF;      /* Primary Purple-Blue from logo */
-  --accent-purple: #A88BFE;    /* Tech Purple alternative */
-  --accent-indigo: #6C63FF;    /* Electric Indigo for highlights */
-  --text-light: #F1F2F6;       /* Bright text on dark backgrounds */
-  --text-muted: #B0B3C2;       /* Cool Metallic Gray from logo */
-  --text-dark: #0D1121;        /* For dark text on light backgrounds */
-  --bg-light: #F9F9F9;         /* White/Off-white for backgrounds */
-  --bg-dark: #0D1121;          /* Space Black for dark mode backgrounds */
-  --gradient-primary: linear-gradient(135deg, #6C63FF 0%, #A88BFE 100%); /* New gradient */
-  --gradient-text: linear-gradient(90deg, #7B8CFF, #A88BFE);
-  --gradient-border: linear-gradient(135deg, rgba(108, 99, 255, 0.5) 0%, rgba(168, 139, 254, 0.5) 100%);
-  --shadow-sm: 0 2px 8px rgba(13, 17, 33, 0.1);
-  --shadow-md: 0 4px 12px rgba(13, 17, 33, 0.15);
-  --shadow-lg: 0 8px 24px rgba(13, 17, 33, 0.2);
-  --glow-effect: 0 0 15px rgba(123, 140, 255, 0.5); /* New glow effect */
+  /* Interstellar Color Palette - Better Contrast */
+  --space-black: #0a0e1a;
+  --space-blue: #0f1729;
+  --space-blue-light: #1a2332;
+  --deep-blue: #0d1b2a;
+  --cosmic-gold: #FFD75E;          /* Softer gold */
+  --bright-gold: #FFC043;
+  --accent-gold: #d4af37;
+  --comet-blue: #4fc3f7;
+  --star-white: #ffffff;
+  --nebula-purple: #7b2cbf;
+  --text-light: #f5f7fa;           /* Better contrast - brighter white */
+  --text-muted: #b8c1db;           /* Better muted - more visible */
+  --text-gold: #FFD75E;
+  
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, #FFD75E 0%, #FFC043 100%);
+  --gradient-space: linear-gradient(180deg, #0a0e1a 0%, #0f1729 50%, #1a2332 100%);
+  --gradient-comet: linear-gradient(135deg, #4fc3f7 0%, #29b6f6 50%, #0288d1 100%);
+  --gradient-gold: linear-gradient(135deg, #e8b84d 0%, #d4a843 100%);  /* TONED DOWN */
+  --gradient-text: linear-gradient(90deg, #FFD75E, #FFC043);
+  
+  /* Effects - REDUCED GLOW */
+  --glow-gold: 0 0 12px rgba(255, 215, 94, 0.35);  /* Less glow */
+  --glow-blue: 0 0 20px rgba(79, 195, 247, 0.6);
+  --glow-star: 0 0 10px rgba(255, 255, 255, 0.8);
+  --shadow-deep: 0 8px 32px rgba(10, 14, 26, 0.8);
+  
+  /* Border Radius */
   --border-radius-sm: 4px;
   --border-radius-md: 8px;
   --border-radius-lg: 16px;
   --border-radius-xl: 24px;
+  
+  /* Animation Speeds */
   --animation-speed-fast: 0.2s;
   --animation-speed-normal: 0.3s;
   --animation-speed-slow: 0.5s;
@@ -41,17 +54,31 @@ html {
 
 body {
   font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
-  background-color: var(--bg-dark);
+  background-color: var(--space-black);
   color: var(--text-light);
   line-height: 1.6;
   min-height: 100vh;
   overflow-x: hidden;
+  position: relative;
+}
+
+/* Starfield Background */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(ellipse at top, #0f1729 0%, #0a0e1a 100%);
+  z-index: -2;
 }
 
 /* Typography */
 h1, h2, h3, h4, h5, h6 {
   margin: 0 0 1rem;
   line-height: 1.2;
+  color: var(--text-light);
 }
 
 h1 {
@@ -75,13 +102,14 @@ p {
 
 /* Links & Buttons */
 a {
-  color: var(--accent-blue);
+  color: var(--cosmic-gold);
   text-decoration: none;
   transition: color var(--animation-speed-fast) ease;
 }
 
 a:hover {
-  color: var(--accent-purple);
+  color: var(--bright-gold);
+  text-shadow: var(--glow-gold);
 }
 
 button {
@@ -93,16 +121,18 @@ button {
   transition: all var(--animation-speed-normal) ease;
 }
 
+/* IMPROVED: Toned Down Primary Button */
 .primary-btn {
-  background: var(--gradient-primary);
-  color: white;
+  background: var(--gradient-gold);
+  color: var(--space-black);
   font-weight: 600;
   padding: 0.75rem 1.5rem;
   border-radius: var(--border-radius-md);
-  box-shadow: var(--shadow-md);
+  box-shadow: 0 4px 12px rgba(232, 184, 77, 0.25);  /* REDUCED glow */
   position: relative;
   overflow: hidden;
   z-index: 1;
+  border: 1px solid rgba(212, 168, 67, 0.3);  /* Subtle border */
 }
 
 .primary-btn::before {
@@ -112,15 +142,15 @@ button {
   left: 0;
   width: 100%;
   height: 100%;
-  background: var(--gradient-primary);
+  background: linear-gradient(135deg, #f4c864 0%, #e8b84d 100%);
   opacity: 0;
   z-index: -1;
   transition: opacity var(--animation-speed-normal) ease;
-  transform: rotate(180deg);
 }
 
 .primary-btn:hover {
-  box-shadow: var(--glow-effect); /* Added glow effect on hover */
+  box-shadow: 0 6px 20px rgba(232, 184, 77, 0.4);  /* Subtle hover glow */
+  transform: translateY(-2px);
 }
 
 .primary-btn:hover::before {
@@ -128,23 +158,13 @@ button {
 }
 
 .primary-btn:active {
-  transform: translateY(2px);
-}
-
-.primary-btn.connected {
-  background: rgba(176, 179, 194, 0.2); /* Updated to match the theme */
-  color: var(--accent-indigo);
-  cursor: default;
-}
-
-.primary-btn.connected::before {
-  display: none;
+  transform: translateY(0);
 }
 
 .secondary-btn {
   background: transparent;
-  color: var(--text-light);
-  border: 1px solid rgba(241, 242, 246, 0.2);
+  color: var(--cosmic-gold);
+  border: 2px solid var(--cosmic-gold);
   font-weight: 500;
   padding: 0.75rem 1.5rem;
   border-radius: var(--border-radius-md);
@@ -160,7 +180,7 @@ button {
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(123, 140, 255, 0.1); /* Using accent-blue with transparency */
+  background: rgba(255, 215, 94, 0.1);
   transform: scaleX(0);
   transform-origin: left;
   transition: transform var(--animation-speed-normal) ease;
@@ -172,9 +192,9 @@ button {
 }
 
 .secondary-btn:hover {
-  border-color: var(--accent-blue);
-  color: var(--accent-purple);
-  box-shadow: var(--glow-effect); /* Added glow effect */
+  border-color: var(--bright-gold);
+  color: var(--bright-gold);
+  box-shadow: var(--glow-gold);
 }
 
 /* Layout */
@@ -190,7 +210,7 @@ button {
 
 /* Utility classes */
 .text-gradient {
-  background: var(--gradient-text);
+  background: var(--gradient-gold);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -200,9 +220,9 @@ button {
   display: inline-block;
   width: 1.2rem;
   height: 1.2rem;
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  border: 2px solid rgba(255, 215, 94, 0.3);
   border-radius: 50%;
-  border-top-color: white;
+  border-top-color: var(--cosmic-gold);
   animation: spin 0.8s linear infinite;
 }
 
@@ -225,20 +245,20 @@ button {
 }
 
 .notification {
-  background: rgba(13, 17, 33, 0.9);
+  background: rgba(15, 23, 41, 0.95);
   backdrop-filter: blur(10px);
   color: var(--text-light);
   padding: 12px 16px;
   border-radius: var(--border-radius-md);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-deep);
   display: flex;
   align-items: center;
   animation: slideIn 0.3s ease forwards;
-  border-left: 3px solid var(--accent-blue);
+  border-left: 3px solid var(--cosmic-gold);
 }
 
 .notification-success {
-  border-left-color: #4CAF50;
+  border-left-color: #4fc3f7;
 }
 
 .notification-error {
@@ -250,7 +270,7 @@ button {
 }
 
 .notification-info {
-  border-left-color: var(--accent-blue);
+  border-left-color: var(--cosmic-gold);
 }
 
 .notification-content {
@@ -288,16 +308,16 @@ button {
 
 /* Glassmorphism effect for containers */
 .glass-container {
-  background: rgba(13, 17, 33, 0.5);
+  background: rgba(15, 23, 41, 0.4);
   backdrop-filter: blur(15px);
-  border: 1px solid rgba(123, 140, 255, 0.1);
+  border: 1px solid rgba(255, 215, 94, 0.2);
   border-radius: var(--border-radius-lg);
-  box-shadow: var(--shadow-md);
+  box-shadow: var(--shadow-deep);
 }
 
 .glass-container:hover {
-  box-shadow: var(--glow-effect);
-  border-color: rgba(123, 140, 255, 0.3);
+  border-color: rgba(255, 215, 94, 0.4);
+  box-shadow: 0 0 30px rgba(255, 215, 94, 0.2);
 }
 
 /* Responsive adjustments */
@@ -313,4 +333,4 @@ button {
   h3 {
     font-size: 1.75rem;
   }
-}
+} 

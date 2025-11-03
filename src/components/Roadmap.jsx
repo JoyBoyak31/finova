@@ -1,4 +1,4 @@
-// src/components/Roadmap.jsx
+// src/components/Roadmap.jsx - Interstellar Theme
 import React from 'react';
 import '../styles/Roadmap.css';
 
@@ -7,44 +7,48 @@ const Roadmap = () => {
     {
       id: 1,
       phase: 'Q2 2025',
-      title: 'Launch FiNOVA Beta',
+      title: 'Launch Orbit',
       milestones: [
-        'Initial platform deployment',
-        'Basic wallet integration',
-        'Core AI algorithm testing'
+        'Website & whitepaper release',
+        '3I/ATLAS AI token launch',
+        '"From the Stars to the Chain" campaign',
+        'Meme & content rollout featuring Elon\'s quote'
       ],
       status: 'current'
     },
     {
       id: 2,
       phase: 'Q3 2025',
-      title: 'Launch Multi-chain Support + Marketing Push',
+      title: 'Interstellar Expansion',
       milestones: [
-        'Expand to multiple blockchains',
-        'Strategic marketing campaigns',
-        'Community growth initiatives'
+        'CEX listings',
+        'NFT drop: "Fragments of the Comet"',
+        'Influencer & podcast tie-ins',
+        'First scheduled token burn event'
       ],
       status: 'upcoming'
     },
     {
       id: 3,
       phase: 'Q4 2025',
-      title: 'Governance & AI Agent Deployment',
+      title: 'AI Awakening',
       milestones: [
-        'DAO governance implementation',
-        'Advanced AI agent integration',
-        'Token utility expansion'
+        '"Interstellar Intelligence Hub" - AI meme generator',
+        'DAO vote for burns and expansion',
+        'Major exchange listing',
+        'Media coverage push'
       ],
       status: 'upcoming'
     },
     {
       id: 4,
       phase: 'Q1 2026',
-      title: 'Community Expansion + Staking Mechanism',
+      title: 'Beyond the Solar System',
       milestones: [
-        'Staking and rewards system',
-        'Global community expansion',
-        'Strategic partnerships'
+        'Cross-chain bridge (Binance/Solana/ETH)',
+        'Partnerships with AI & space projects',
+        'Cosmic NFT Game launch',
+        'Collect fragments, earn rewards'
       ],
       status: 'upcoming'
     }
@@ -67,8 +71,6 @@ const Roadmap = () => {
             <div 
               key={item.id} 
               className={`roadmap-item ${item.status}`}
-              data-aos={index % 2 === 0 ? "fade-right" : "fade-left"}
-              data-aos-delay={index * 100}
             >
               <div className="roadmap-marker">
                 <div className="marker-dot"></div>

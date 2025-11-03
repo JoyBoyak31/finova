@@ -1,27 +1,10 @@
-// src/components/Layout.jsx
+// src/components/Layout.jsx - Interstellar Theme
 import React, { useState, useEffect } from 'react';
 import Navbar from './Navbar';
 import '../styles/main.css';
 
-const Layout = ({ children, onConnectWallet, walletConnected }) => {
-  const [isLoading, setIsLoading] = useState(false);
+const Layout = ({ children }) => {
   const [notifications, setNotifications] = useState([]);
-
-  // Function to handle wallet connection
-  const handleConnectWallet = async () => {
-    if (walletConnected) return;
-    
-    setIsLoading(true);
-    try {
-      await onConnectWallet();
-      showNotification('Wallet connected successfully!', 'success');
-    } catch (error) {
-      console.error('Failed to connect wallet:', error);
-      showNotification('Failed to connect wallet. Please try again.', 'error');
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   // Notification system
   const showNotification = (message, type = 'info', duration = 3000) => {
@@ -54,11 +37,7 @@ const Layout = ({ children, onConnectWallet, walletConnected }) => {
 
   return (
     <div className="app-container">
-      <Navbar 
-        onConnectWallet={handleConnectWallet} 
-        walletConnected={walletConnected} 
-        isLoading={isLoading} 
-      />
+      <Navbar />
       <main className="main-content">
         {children}
       </main>

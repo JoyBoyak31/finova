@@ -1,8 +1,8 @@
-/* src/styles/Roadmap.css */
+/* src/styles/Roadmap.css - Interstellar Theme */
 .roadmap-section {
   padding: 100px 0;
   position: relative;
-  background-color: var(--bg-dark);
+  background: radial-gradient(ellipse at center, #0f1729 0%, #0a0e1a 100%);
   overflow: hidden;
   z-index: 1;
 }
@@ -27,14 +27,14 @@
   left: 50%;
   width: 4px;
   height: 100%;
-  background: linear-gradient(180deg, 
-    rgba(139, 92, 246, 0.8) 0%, 
-    rgba(59, 130, 246, 0.8) 50%, 
-    rgba(16, 185, 129, 0.8) 100%);
+  background: linear-gradient(180deg,
+      rgba(79, 195, 247, 0.8) 0%,
+      rgba(212, 175, 55, 0.8) 50%,
+      rgba(123, 44, 191, 0.8) 100%);
   transform: translateX(-50%);
   z-index: 1;
   border-radius: 4px;
-  box-shadow: 0 0 15px rgba(139, 92, 246, 0.5);
+  box-shadow: 0 0 15px rgba(79, 195, 247, 0.5);
 }
 
 .roadmap-item {
@@ -72,72 +72,74 @@
   width: 24px;
   height: 24px;
   border-radius: 50%;
-  background: var(--accent-color);
-  box-shadow: 0 0 15px rgba(139, 92, 246, 0.7);
+  background: var(--cosmic-gold);
+  box-shadow: 0 0 20px rgba(212, 175, 55, 0.8);
   z-index: 2;
 }
 
 .roadmap-item.current .marker-dot {
-  background: linear-gradient(135deg, var(--accent-color), var(--secondary-color));
+  background: linear-gradient(135deg, #4fc3f7, #d4af37);
   animation: pulse-dot 2s infinite;
 }
 
 .marker-line {
   width: 60px;
   height: 3px;
-  background-color: var(--accent-color);
+  background-color: var(--cosmic-gold);
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
+  box-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
 }
 
 .roadmap-item:nth-child(odd) .marker-line {
-  left: 24px;
+  right: 24px;
+
 }
 
 .roadmap-item:nth-child(even) .marker-line {
-  right: 24px;
-  left: auto;
-  transform: translateY(-50%) rotate(180deg);
+  right: auto;
+  left: 24px;
 }
 
 .roadmap-content {
   width: calc(50% - 60px);
   padding: 30px;
-  background: rgba(30, 30, 40, 0.4);
+  background: rgba(15, 23, 41, 0.5);
   border-radius: 16px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(212, 175, 55, 0.2);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .roadmap-content:hover {
   transform: translateY(-5px);
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 12px 40px rgba(212, 175, 55, 0.3);
+  border-color: rgba(212, 175, 55, 0.4);
 }
 
 .roadmap-item.current .roadmap-content {
-  border: 1px solid rgba(139, 92, 246, 0.3);
-  box-shadow: 0 8px 32px rgba(139, 92, 246, 0.2);
+  border: 1px solid rgba(79, 195, 247, 0.4);
+  box-shadow: 0 8px 32px rgba(79, 195, 247, 0.2);
 }
 
 .roadmap-phase {
   display: inline-block;
-  background: linear-gradient(135deg, var(--accent-color), var(--secondary-color));
+  background: var(--gradient-gold);
   padding: 6px 12px;
   border-radius: 20px;
   font-size: 0.9rem;
   font-weight: 600;
   margin-bottom: 15px;
-  color: var(--bg-dark);
+  color: var(--space-black);
+  box-shadow: 0 0 15px rgba(212, 175, 55, 0.3);
 }
 
 .roadmap-title {
   font-size: 1.4rem;
   margin-bottom: 15px;
-  color: var(--text-primary);
+  color: var(--cosmic-gold);
 }
 
 .milestone-list {
@@ -150,7 +152,7 @@
   position: relative;
   padding-left: 22px;
   margin-bottom: 10px;
-  color: var(--text-secondary);
+  color: var(--text-muted);
   font-size: 1rem;
 }
 
@@ -161,9 +163,10 @@
   top: 8px;
   width: 12px;
   height: 12px;
-  background-color: rgba(139, 92, 246, 0.3);
+  background-color: rgba(79, 195, 247, 0.5);
   border-radius: 3px;
   transform: rotate(45deg);
+  box-shadow: 0 0 8px rgba(79, 195, 247, 0.4);
 }
 
 .status-badge {
@@ -177,25 +180,22 @@
 }
 
 .roadmap-item.current .status-badge {
-  background-color: rgba(16, 185, 129, 0.2);
-  color: rgb(16, 185, 129);
+  background-color: rgba(79, 195, 247, 0.2);
+  color: #4fc3f7;
+  border: 1px solid rgba(79, 195, 247, 0.4);
 }
 
 .roadmap-item.upcoming .status-badge {
-  background-color: rgba(59, 130, 246, 0.2);
-  color: rgb(59, 130, 246);
-}
-
-.roadmap-item.completed .status-badge {
-  background-color: rgba(139, 92, 246, 0.2);
-  color: rgb(139, 92, 246);
+  background-color: rgba(212, 175, 55, 0.2);
+  color: var(--cosmic-gold);
+  border: 1px solid rgba(212, 175, 55, 0.4);
 }
 
 .roadmap-note {
   text-align: center;
   margin-top: 40px;
   font-style: italic;
-  color: var(--text-secondary);
+  color: var(--text-muted);
   opacity: 0.8;
 }
 
@@ -206,7 +206,7 @@
   right: -150px;
   width: 400px;
   height: 400px;
-  background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, rgba(139, 92, 246, 0) 70%);
+  background: radial-gradient(circle, rgba(79, 195, 247, 0.15) 0%, transparent 70%);
   border-radius: 50%;
   z-index: 0;
 }
@@ -217,7 +217,7 @@
   left: -150px;
   width: 350px;
   height: 350px;
-  background: radial-gradient(circle, rgba(59, 130, 246, 0.15) 0%, rgba(59, 130, 246, 0) 70%);
+  background: radial-gradient(circle, rgba(212, 175, 55, 0.15) 0%, transparent 70%);
   border-radius: 50%;
   z-index: 0;
 }
@@ -225,13 +225,15 @@
 /* Animations */
 @keyframes pulse-dot {
   0% {
-    box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.7);
+    box-shadow: 0 0 0 0 rgba(79, 195, 247, 0.7);
   }
+
   70% {
-    box-shadow: 0 0 0 10px rgba(139, 92, 246, 0);
+    box-shadow: 0 0 0 10px rgba(79, 195, 247, 0);
   }
+
   100% {
-    box-shadow: 0 0 0 0 rgba(139, 92, 246, 0);
+    box-shadow: 0 0 0 0 rgba(79, 195, 247, 0);
   }
 }
 
@@ -240,27 +242,45 @@
   .timeline-track {
     left: 30px;
   }
-  
+
   .roadmap-item {
     justify-content: flex-start !important;
     margin-left: 60px;
   }
-  
+
   .roadmap-marker {
     left: 30px;
   }
-  
+
   .marker-line {
     width: 30px;
   }
-  
+
   .roadmap-item:nth-child(odd) .marker-line,
   .roadmap-item:nth-child(even) .marker-line {
     left: 24px;
     transform: translateY(-50%);
   }
-  
+
   .roadmap-content {
     width: calc(100% - 60px);
   }
-}   
+}
+
+@media (max-width: 768px) {
+  .roadmap-section {
+    padding: 80px 0;
+  }
+
+  .roadmap-content {
+    padding: 20px;
+  }
+
+  .roadmap-title {
+    font-size: 1.2rem;
+  }
+
+  .milestone-item {
+    font-size: 0.95rem;
+  }
+}

@@ -1,14 +1,12 @@
-// src/components/Tokenomics.jsx
+// src/components/Tokenomics.jsx - Interstellar Theme
 import React from 'react';
 import '../styles/Tokenomics.css';
 
 const Tokenomics = () => {
   const tokenomicsData = [
-    { category: 'User Incentives', percentage: 40, color: '#8b5cf6' },
-    { category: 'Community & Ecosystem', percentage: 25, color: '#3b82f6' },
-    { category: 'Team & Development (locked)', percentage: 20, color: '#10b981' },
-    { category: 'Strategic Partnerships', percentage: 10, color: '#f59e0b' },
-    { category: 'Liquidity & Reserves', percentage: 5, color: '#ef4444' }
+    { category: 'Liquidity Pool (Locked)', percentage: 80, color: '#4fc3f7' },
+    { category: 'Marketing & Burns', percentage: 15, color: '#d4af37' },
+    { category: 'Development (Locked 6mo)', percentage: 5, color: '#7b2cbf' }
   ];
 
   // Calculate accumulated percentages for conic-gradient
@@ -28,7 +26,7 @@ const Tokenomics = () => {
           </h2>
           <div className="title-underline"></div>
           <p className="section-subtitle">
-            Our AI-tokenomics model ensures sustainable growth and fair rewards.
+            Total Supply: 1,000,000,000 | 0% Buy/Sell Tax
           </p>
         </div>
 
@@ -41,7 +39,7 @@ const Tokenomics = () => {
               }}
             >
               <div className="chart-center">
-                <span className="logo-text">FINOVA</span>
+                <span className="logo-text">3I/ATLAS</span>
                 <span className="logo-highlight">AI</span>
               </div>
             </div>
@@ -75,6 +73,9 @@ const Tokenomics = () => {
                 </div>
               ))}
             </div>
+            <div className="burn-mechanic">
+              <p>🔥 Scheduled Burns: Each burn reduces supply — "like a comet burning brighter as it gets closer."</p>
+            </div>
           </div>
         </div>
       </div>
@@ -82,7 +83,6 @@ const Tokenomics = () => {
       <div className="tokenomics-bg">
         <div className="geometric-shape shape-1"></div>
         <div className="geometric-shape shape-2"></div>
-        <div className="geometric-shape shape-3"></div>
       </div>
     </section>
   );
